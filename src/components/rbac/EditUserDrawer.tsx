@@ -172,8 +172,8 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
               </div>
             ) : (
               <div className="space-y-5">
-                {(Object.keys(grouped) as ExtensionGroup[]).map((group) => {
-                  const items = grouped[group];
+                {activeGroups.map((group) => {
+                  const items = grouped[group] ?? [];
                   if (items.length === 0) return null;
                   return (
                     <div key={group}>
