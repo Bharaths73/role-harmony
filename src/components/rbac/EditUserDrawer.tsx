@@ -176,40 +176,69 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
                 <p>Select a role to configure extensions.</p>
               </div>
             ) : (
-              <div className="space-y-5">
-                {activeGroups.map((group) => {
-                  const items = grouped[group] ?? [];
-                  if (items.length === 0) return null;
+              <div className="space-y-6">
+                {perRoleGroups.map(({ role, byGroup }) => {
+                  const groupKeys = EXTENSION_GROUP_ORDER.filter((g) => byGroup[g]);
+                  if (groupKeys.length === 0) return null;
+                  const roleExtIds = groupKeys.flatMap((g) => byGroup[g]!.map((e) => e.id));
+                  const selectedInRole = roleExtIds.filter((id) => extensions.includes(id)).length;
                   return (
-                    <div key={group}>
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-                        {group}
-                      </p>
-                      <div className="overflow-hidden rounded-lg border border-border bg-surface">
-                        {items.map((ext, idx) => {
-                          const checked = extensions.includes(ext.id);
-                          const exclusive = ext.roles.length === 1;
+                    <div
+                      key={role}
+                      className="overflow-hidden rounded-lg border border-border bg-surface"
+                    >
+                      <div className="flex items-center justify-between gap-3 border-b border-border bg-surface-elevated px-4 py-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                          <p className="text-sm font-semibold text-foreground">{role}</p>
+                        </div>
+                        <span className="text-[11px] text-muted-foreground">
+                          {selectedInRole} of {roleExtIds.length} enabled
+                        </span>
+                      </div>
+
+                      <div className="space-y-4 p-4">
+                        {groupKeys.map((group) => {
+                          const items = byGroup[group]!;
                           return (
-                            <label
-                              key={ext.id}
-                              className={cn(
-                                "flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 transition hover:bg-accent/40",
-                                idx > 0 && "border-t border-border",
-                              )}
-                            >
-                              <div className="flex items-center gap-3">
-                                <Checkbox
-                                  checked={checked}
-                                  onCheckedChange={() => toggleExtension(ext.id)}
-                                />
-                                <span className="text-sm text-foreground">{ext.label}</span>
+                            <div key={group}>
+                              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+                                {group}
+                              </p>
+                              <div className="overflow-hidden rounded-md border border-border bg-background">
+                                {items.map((ext, idx) => {
+                                  const checked = extensions.includes(ext.id);
+                                  const exclusive = ext.roles.length === 1;
+                                  const sharedWith = ext.roles.filter((r) => r !== role && roles.includes(r));
+                                  return (
+                                    <label
+                                      key={`${role}-${ext.id}`}
+                                      className={cn(
+                                        "flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 transition hover:bg-accent/40",
+                                        idx > 0 && "border-t border-border",
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <Checkbox
+                                          checked={checked}
+                                          onCheckedChange={() => toggleExtension(ext.id)}
+                                        />
+                                        <span className="text-sm text-foreground">{ext.label}</span>
+                                      </div>
+                                      {exclusive ? (
+                                        <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent-foreground">
+                                          {role} only
+                                        </span>
+                                      ) : sharedWith.length > 0 ? (
+                                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                          shared
+                                        </span>
+                                      ) : null}
+                                    </label>
+                                  );
+                                })}
                               </div>
-                              {exclusive && (
-                                <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent-foreground">
-                                  {ext.roles[0]} only
-                                </span>
-                              )}
-                            </label>
+                            </div>
                           );
                         })}
                       </div>
