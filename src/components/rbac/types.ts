@@ -1,6 +1,13 @@
 export type RoleName = "Admin" | "Editor" | "Viewer" | "Billing" | "Support";
 
-export type ExtensionGroup = "Categories" | "Containers";
+export type ExtensionGroup = "Categories" | "Containers" | "Dimensions" | "Regions";
+
+export const EXTENSION_GROUP_ORDER: ExtensionGroup[] = [
+  "Categories",
+  "Containers",
+  "Dimensions",
+  "Regions",
+];
 
 export interface ExtensionDef {
   id: string;
@@ -45,7 +52,26 @@ export const EXTENSIONS: ExtensionDef[] = [
   { id: "con_subs", label: "Subscriptions", group: "Containers", roles: ["Billing"] },
   { id: "con_kb", label: "Knowledge Base", group: "Containers", roles: ["Support", "Editor"] },
   { id: "con_chat", label: "Live Chat", group: "Containers", roles: ["Support"] },
+
+  // Dimensions
+  { id: "dim_revenue", label: "Revenue", group: "Dimensions", roles: ["Admin", "Billing"] },
+  { id: "dim_traffic", label: "Traffic", group: "Dimensions", roles: ["Admin", "Viewer"] },
+  { id: "dim_engagement", label: "Engagement", group: "Dimensions", roles: ["Editor", "Viewer"] },
+  { id: "dim_support_sla", label: "Support SLA", group: "Dimensions", roles: ["Support"] },
+
+  // Regions
+  { id: "reg_na", label: "North America", group: "Regions", roles: ["Admin", "Billing", "Support"] },
+  { id: "reg_emea", label: "EMEA", group: "Regions", roles: ["Admin", "Editor"] },
+  { id: "reg_apac", label: "APAC", group: "Regions", roles: ["Admin", "Viewer"] },
+  { id: "reg_latam", label: "LATAM", group: "Regions", roles: ["Admin", "Support"] },
 ];
+
+export const getActiveGroups = (roles: RoleName[]): ExtensionGroup[] => {
+  if (roles.length === 0) return [];
+  const allowed = getAllowedExtensions(roles);
+  const present = new Set(allowed.map((e) => e.group));
+  return EXTENSION_GROUP_ORDER.filter((g) => present.has(g));
+};
 
 export const getExtensionById = (id: string) => EXTENSIONS.find((e) => e.id === id);
 
