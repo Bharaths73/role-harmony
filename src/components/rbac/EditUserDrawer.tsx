@@ -11,13 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Mail, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
+  EXTENSIONS,
   EXTENSION_GROUP_ORDER,
   ExtensionDef,
   ExtensionGroup,
   ROLES,
   RoleName,
   User,
-  getActiveGroups,
   getAllowedExtensions,
 } from "./types";
 import { RoleChip } from "./RoleChip";
