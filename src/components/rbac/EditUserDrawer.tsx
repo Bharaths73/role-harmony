@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/sheet";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Mail, Info } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Mail, Info, ChevronDown, X, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   EXTENSIONS,
@@ -200,66 +201,125 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
                       <div className="space-y-4 p-4">
                         {groupKeys.map((group) => {
                           const items = byGroup[group]!;
+                          const selected = items.filter((e) => extensions.includes(e.id));
+                          const allSelected = selected.length === items.length && items.length > 0;
                           return (
                             <div key={group}>
-                              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-                                {group}
-                              </p>
-                              <div className="flex flex-wrap gap-2">
-                                {items.map((ext) => {
-                                  const checked = extensions.includes(ext.id);
-                                  const exclusive = ext.roles.length === 1;
-                                  return (
-                                    <button
-                                      key={`${role}-${ext.id}`}
-                                      type="button"
-                                      onClick={() => toggleExtension(ext.id)}
-                                      aria-pressed={checked}
-                                      className={cn(
-                                        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                                        checked
-                                          ? "border-primary bg-primary text-primary-foreground"
-                                          : "border-border bg-background text-foreground hover:border-primary/40",
-                                      )}
-                                    >
-                                      <span
-                                        className={cn(
-                                          "flex h-3.5 w-3.5 items-center justify-center rounded-full border",
-                                          checked
-                                            ? "border-primary-foreground bg-primary-foreground/20"
-                                            : "border-muted-foreground/40",
-                                        )}
-                                      >
-                                        {checked && (
-                                          <svg
-                                            viewBox="0 0 12 12"
-                                            className="h-2.5 w-2.5 fill-none stroke-primary-foreground stroke-[2]"
+                              <div className="mb-2 flex items-center justify-between">
+                                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+                                  {group}
+                                </p>
+                                <span className="text-[11px] text-muted-foreground">
+                                  {selected.length}/{items.length}
+                                </span>
+                              </div>
+
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <button
+                                    type="button"
+                                    className={cn(
+                                      "flex w-full items-center justify-between gap-2 rounded-md border bg-background px-3 py-2 text-left text-sm transition",
+                                      "border-border hover:border-extension/60 focus:outline-none focus:ring-2 focus:ring-extension/30",
+                                    )}
+                                  >
+                                    <div className="flex min-h-[20px] flex-1 flex-wrap items-center gap-1.5">
+                                      {selected.length === 0 ? (
+                                        <span className="text-muted-foreground">
+                                          Select {group.toLowerCase()}…
+                                        </span>
+                                      ) : (
+                                        selected.map((ext) => (
+                                          <span
+                                            key={ext.id}
+                                            className="inline-flex items-center gap-1 rounded-full border border-extension-border bg-extension-soft px-2 py-0.5 text-xs font-medium text-extension-soft-foreground"
                                           >
-                                            <path
-                                              d="M2.5 6.5l2.5 2.5 4.5-5"
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                            />
-                                          </svg>
-                                        )}
-                                      </span>
-                                      {ext.label}
-                                      {exclusive && (
-                                        <span
+                                            {ext.label}
+                                            <span
+                                              role="button"
+                                              tabIndex={-1}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleExtension(ext.id);
+                                              }}
+                                              className="-mr-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full hover:bg-extension/15"
+                                              aria-label={`Remove ${ext.label}`}
+                                            >
+                                              <X className="h-2.5 w-2.5" />
+                                            </span>
+                                          </span>
+                                        ))
+                                      )}
+                                    </div>
+                                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                  </button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  className="w-[--radix-popover-trigger-width] p-1"
+                                  align="start"
+                                >
+                                  <div className="flex items-center justify-between px-2 py-1.5">
+                                    <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                      {group}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (allSelected) {
+                                          items.forEach((e) => {
+                                            if (extensions.includes(e.id)) toggleExtension(e.id);
+                                          });
+                                        } else {
+                                          items.forEach((e) => {
+                                            if (!extensions.includes(e.id)) toggleExtension(e.id);
+                                          });
+                                        }
+                                      }}
+                                      className="text-[11px] font-medium text-extension hover:underline"
+                                    >
+                                      {allSelected ? "Clear" : "Select all"}
+                                    </button>
+                                  </div>
+                                  <div className="max-h-64 overflow-y-auto">
+                                    {items.map((ext) => {
+                                      const checked = extensions.includes(ext.id);
+                                      const exclusive = ext.roles.length === 1;
+                                      return (
+                                        <button
+                                          key={`${role}-${ext.id}-opt`}
+                                          type="button"
+                                          onClick={() => toggleExtension(ext.id)}
                                           className={cn(
-                                            "ml-1 rounded px-1 py-0.5 text-[9px] uppercase tracking-wide",
+                                            "flex w-full items-center justify-between gap-2 rounded-sm px-2 py-2 text-left text-sm transition",
                                             checked
-                                              ? "bg-primary-foreground/15 text-primary-foreground"
-                                              : "bg-accent text-accent-foreground",
+                                              ? "bg-extension-soft text-extension-soft-foreground"
+                                              : "text-foreground hover:bg-accent",
                                           )}
                                         >
-                                          only
-                                        </span>
-                                      )}
-                                    </button>
-                                  );
-                                })}
-                              </div>
+                                          <div className="flex items-center gap-2">
+                                            <span
+                                              className={cn(
+                                                "flex h-4 w-4 items-center justify-center rounded border",
+                                                checked
+                                                  ? "border-extension bg-extension text-extension-foreground"
+                                                  : "border-border",
+                                              )}
+                                            >
+                                              {checked && <Check className="h-3 w-3" strokeWidth={3} />}
+                                            </span>
+                                            {ext.label}
+                                          </div>
+                                          {exclusive && (
+                                            <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-accent-foreground">
+                                              only
+                                            </span>
+                                          )}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
                             </div>
                           );
                         })}
