@@ -205,36 +205,58 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
                               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
                                 {group}
                               </p>
-                              <div className="overflow-hidden rounded-md border border-border bg-background">
-                                {items.map((ext, idx) => {
+                              <div className="flex flex-wrap gap-2">
+                                {items.map((ext) => {
                                   const checked = extensions.includes(ext.id);
                                   const exclusive = ext.roles.length === 1;
-                                  const sharedWith = ext.roles.filter((r) => r !== role && roles.includes(r));
                                   return (
-                                    <label
+                                    <button
                                       key={`${role}-${ext.id}`}
+                                      type="button"
+                                      onClick={() => toggleExtension(ext.id)}
+                                      aria-pressed={checked}
                                       className={cn(
-                                        "flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 transition hover:bg-accent/40",
-                                        idx > 0 && "border-t border-border",
+                                        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                                        checked
+                                          ? "border-primary bg-primary text-primary-foreground"
+                                          : "border-border bg-background text-foreground hover:border-primary/40",
                                       )}
                                     >
-                                      <div className="flex items-center gap-3">
-                                        <Checkbox
-                                          checked={checked}
-                                          onCheckedChange={() => toggleExtension(ext.id)}
-                                        />
-                                        <span className="text-sm text-foreground">{ext.label}</span>
-                                      </div>
-                                      {exclusive ? (
-                                        <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent-foreground">
-                                          {role} only
+                                      <span
+                                        className={cn(
+                                          "flex h-3.5 w-3.5 items-center justify-center rounded-full border",
+                                          checked
+                                            ? "border-primary-foreground bg-primary-foreground/20"
+                                            : "border-muted-foreground/40",
+                                        )}
+                                      >
+                                        {checked && (
+                                          <svg
+                                            viewBox="0 0 12 12"
+                                            className="h-2.5 w-2.5 fill-none stroke-primary-foreground stroke-[2]"
+                                          >
+                                            <path
+                                              d="M2.5 6.5l2.5 2.5 4.5-5"
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                            />
+                                          </svg>
+                                        )}
+                                      </span>
+                                      {ext.label}
+                                      {exclusive && (
+                                        <span
+                                          className={cn(
+                                            "ml-1 rounded px-1 py-0.5 text-[9px] uppercase tracking-wide",
+                                            checked
+                                              ? "bg-primary-foreground/15 text-primary-foreground"
+                                              : "bg-accent text-accent-foreground",
+                                          )}
+                                        >
+                                          only
                                         </span>
-                                      ) : sharedWith.length > 0 ? (
-                                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                                          shared
-                                        </span>
-                                      ) : null}
-                                    </label>
+                                      )}
+                                    </button>
                                   );
                                 })}
                               </div>
