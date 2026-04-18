@@ -11,13 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Mail, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
+  EXTENSIONS,
   EXTENSION_GROUP_ORDER,
   ExtensionDef,
   ExtensionGroup,
   ROLES,
   RoleName,
   User,
-  getActiveGroups,
   getAllowedExtensions,
 } from "./types";
 import { RoleChip } from "./RoleChip";
@@ -51,14 +51,19 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
     setExtensions((prev) => prev.filter((id) => allowedIds.has(id)));
   }, [allowedIds]);
 
-  // Lazy: only computed when roles change. Empty when no roles selected.
-  const activeGroups = useMemo(() => getActiveGroups(roles), [roles]);
-  const grouped = useMemo(() => {
-    const map = {} as Record<ExtensionGroup, ExtensionDef[]>;
-    activeGroups.forEach((g) => (map[g] = []));
-    allowed.forEach((e) => map[e.group]?.push(e));
-    return map;
-  }, [allowed, activeGroups]);
+  // Per-role grouping: each selected role gets its own block, with its own type sections.
+  // Lazy: only computed when roles change.
+  const perRoleGroups = useMemo(() => {
+    return roles.map((role) => {
+      const roleExts = EXTENSIONS.filter((e) => e.roles.includes(role));
+      const byGroup = {} as Record<ExtensionGroup, ExtensionDef[]>;
+      EXTENSION_GROUP_ORDER.forEach((g) => {
+        const items = roleExts.filter((e) => e.group === g);
+        if (items.length > 0) byGroup[g] = items;
+      });
+      return { role, byGroup };
+    });
+  }, [roles]);
 
   const toggleRole = (role: RoleName) =>
     setRoles((prev) => (prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]));
@@ -171,40 +176,69 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
                 <p>Select a role to configure extensions.</p>
               </div>
             ) : (
-              <div className="space-y-5">
-                {activeGroups.map((group) => {
-                  const items = grouped[group] ?? [];
-                  if (items.length === 0) return null;
+              <div className="space-y-6">
+                {perRoleGroups.map(({ role, byGroup }) => {
+                  const groupKeys = EXTENSION_GROUP_ORDER.filter((g) => byGroup[g]);
+                  if (groupKeys.length === 0) return null;
+                  const roleExtIds = groupKeys.flatMap((g) => byGroup[g]!.map((e) => e.id));
+                  const selectedInRole = roleExtIds.filter((id) => extensions.includes(id)).length;
                   return (
-                    <div key={group}>
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-                        {group}
-                      </p>
-                      <div className="overflow-hidden rounded-lg border border-border bg-surface">
-                        {items.map((ext, idx) => {
-                          const checked = extensions.includes(ext.id);
-                          const exclusive = ext.roles.length === 1;
+                    <div
+                      key={role}
+                      className="overflow-hidden rounded-lg border border-border bg-surface"
+                    >
+                      <div className="flex items-center justify-between gap-3 border-b border-border bg-surface-elevated px-4 py-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                          <p className="text-sm font-semibold text-foreground">{role}</p>
+                        </div>
+                        <span className="text-[11px] text-muted-foreground">
+                          {selectedInRole} of {roleExtIds.length} enabled
+                        </span>
+                      </div>
+
+                      <div className="space-y-4 p-4">
+                        {groupKeys.map((group) => {
+                          const items = byGroup[group]!;
                           return (
-                            <label
-                              key={ext.id}
-                              className={cn(
-                                "flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 transition hover:bg-accent/40",
-                                idx > 0 && "border-t border-border",
-                              )}
-                            >
-                              <div className="flex items-center gap-3">
-                                <Checkbox
-                                  checked={checked}
-                                  onCheckedChange={() => toggleExtension(ext.id)}
-                                />
-                                <span className="text-sm text-foreground">{ext.label}</span>
+                            <div key={group}>
+                              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+                                {group}
+                              </p>
+                              <div className="overflow-hidden rounded-md border border-border bg-background">
+                                {items.map((ext, idx) => {
+                                  const checked = extensions.includes(ext.id);
+                                  const exclusive = ext.roles.length === 1;
+                                  const sharedWith = ext.roles.filter((r) => r !== role && roles.includes(r));
+                                  return (
+                                    <label
+                                      key={`${role}-${ext.id}`}
+                                      className={cn(
+                                        "flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 transition hover:bg-accent/40",
+                                        idx > 0 && "border-t border-border",
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <Checkbox
+                                          checked={checked}
+                                          onCheckedChange={() => toggleExtension(ext.id)}
+                                        />
+                                        <span className="text-sm text-foreground">{ext.label}</span>
+                                      </div>
+                                      {exclusive ? (
+                                        <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent-foreground">
+                                          {role} only
+                                        </span>
+                                      ) : sharedWith.length > 0 ? (
+                                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                          shared
+                                        </span>
+                                      ) : null}
+                                    </label>
+                                  );
+                                })}
                               </div>
-                              {exclusive && (
-                                <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-accent-foreground">
-                                  {ext.roles[0]} only
-                                </span>
-                              )}
-                            </label>
+                            </div>
                           );
                         })}
                       </div>
