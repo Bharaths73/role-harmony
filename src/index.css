@@ -41,6 +41,13 @@ All colors MUST be HSL.
     --input: 220 14% 91%;
     --ring: 222 47% 18%;
 
+    /* Extension chips — teal accent, distinct from primary roles */
+    --extension: 174 72% 36%;
+    --extension-foreground: 0 0% 100%;
+    --extension-soft: 174 60% 95%;
+    --extension-soft-foreground: 174 80% 22%;
+    --extension-border: 174 40% 80%;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;

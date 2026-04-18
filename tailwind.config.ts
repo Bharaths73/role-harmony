@@ -43,6 +43,13 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        extension: {
+          DEFAULT: "hsl(var(--extension))",
+          foreground: "hsl(var(--extension-foreground))",
+          soft: "hsl(var(--extension-soft))",
+          "soft-foreground": "hsl(var(--extension-soft-foreground))",
+          border: "hsl(var(--extension-border))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
