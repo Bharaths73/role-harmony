@@ -7,7 +7,8 @@ export const MOCK_USERS: User[] = [
     email: "anya.p@acme.io",
     initials: "AP",
     lastActive: "2024-03-10 14:30",
-    assignments: [{ id: "a1", role: "Admin", extension: "Full Access" }],
+    roles: ["Admin"],
+    extensions: ["cat_full", "con_audit", "con_dashboards"],
   },
   {
     id: "u_2",
@@ -15,10 +16,8 @@ export const MOCK_USERS: User[] = [
     email: "ben.m@acme.io",
     initials: "BM",
     lastActive: "2024-03-09 09:15",
-    assignments: [
-      { id: "a2", role: "Editor", extension: "Content" },
-      { id: "a3", role: "Viewer", extension: "Audits" },
-    ],
+    roles: ["Editor", "Viewer"],
+    extensions: ["cat_content", "cat_drafts", "con_media", "con_reports"],
   },
   {
     id: "u_3",
@@ -26,7 +25,8 @@ export const MOCK_USERS: User[] = [
     email: "chloe.l@acme.io",
     initials: "CL",
     lastActive: "2024-03-08 11:00",
-    assignments: [{ id: "a4", role: "Viewer", extension: "Read-Only" }],
+    roles: ["Viewer"],
+    extensions: ["cat_readonly"],
   },
   {
     id: "u_4",
@@ -34,10 +34,8 @@ export const MOCK_USERS: User[] = [
     email: "david.r@acme.io",
     initials: "DR",
     lastActive: "2024-03-07 18:45",
-    assignments: [
-      { id: "a5", role: "Admin", extension: "User Management" },
-      { id: "a6", role: "Billing", extension: "Invoices" },
-    ],
+    roles: ["Admin", "Billing"],
+    extensions: ["cat_user_mgmt", "cat_invoices", "con_subs"],
   },
   {
     id: "u_5",
@@ -45,7 +43,8 @@ export const MOCK_USERS: User[] = [
     email: "elena.m@acme.io",
     initials: "EM",
     lastActive: "2024-03-06 16:00",
-    assignments: [{ id: "a7", role: "Editor", extension: "Drafts" }],
+    roles: ["Editor"],
+    extensions: ["cat_drafts"],
   },
   {
     id: "u_6",
@@ -53,10 +52,8 @@ export const MOCK_USERS: User[] = [
     email: "finn.p@acme.io",
     initials: "FP",
     lastActive: "2024-03-05 10:10",
-    assignments: [
-      { id: "a8", role: "Support", extension: "Tickets" },
-      { id: "a9", role: "Viewer", extension: "Reports" },
-    ],
+    roles: ["Support", "Viewer"],
+    extensions: ["cat_tickets", "con_kb", "con_reports"],
   },
   {
     id: "u_7",
@@ -64,6 +61,7 @@ export const MOCK_USERS: User[] = [
     email: "grace.h@acme.io",
     initials: "GH",
     lastActive: "2024-03-04 08:22",
-    assignments: [{ id: "a10", role: "Editor", extension: "Media Library" }],
+    roles: ["Editor"],
+    extensions: ["con_media"],
   },
 ];
