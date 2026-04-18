@@ -1,32 +1,29 @@
-import { X } from "lucide-react";
-import { Assignment } from "./types";
 import { cn } from "@/lib/utils";
+import { RoleName } from "./types";
+
+const ROLE_STYLES: Record<RoleName, string> = {
+  Admin: "bg-[hsl(222_47%_96%)] text-[hsl(222_47%_25%)] border-[hsl(222_30%_85%)]",
+  Editor: "bg-[hsl(210_60%_96%)] text-[hsl(210_70%_30%)] border-[hsl(210_50%_85%)]",
+  Viewer: "bg-[hsl(150_40%_95%)] text-[hsl(150_50%_25%)] border-[hsl(150_30%_82%)]",
+  Billing: "bg-[hsl(35_80%_95%)] text-[hsl(28_70%_30%)] border-[hsl(35_60%_82%)]",
+  Support: "bg-[hsl(280_40%_96%)] text-[hsl(280_50%_30%)] border-[hsl(280_30%_85%)]",
+};
 
 interface RoleChipProps {
-  assignment: Assignment;
-  onRemove?: (id: string) => void;
+  role: RoleName;
+  size?: "sm" | "md";
 }
 
-export function RoleChip({ assignment, onRemove }: RoleChipProps) {
+export function RoleChip({ role, size = "sm" }: RoleChipProps) {
   return (
     <span
       className={cn(
-        "group inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary-foreground/90",
+        "inline-flex items-center rounded-md border font-medium",
+        size === "sm" ? "px-1.5 py-0.5 text-[11px]" : "px-2 py-1 text-xs",
+        ROLE_STYLES[role],
       )}
     >
-      <span className="text-primary-foreground/70">{assignment.role}</span>
-      <span className="text-primary-foreground/40">▸</span>
-      <span>{assignment.extension}</span>
-      {onRemove && (
-        <button
-          type="button"
-          onClick={() => onRemove(assignment.id)}
-          className="ml-0.5 rounded text-primary-foreground/50 opacity-0 transition group-hover:opacity-100 hover:text-primary-foreground"
-          aria-label={`Remove ${assignment.role} ${assignment.extension}`}
-        >
-          <X className="h-3 w-3" />
-        </button>
-      )}
+      {role}
     </span>
   );
 }
