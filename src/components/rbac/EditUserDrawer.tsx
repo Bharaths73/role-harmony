@@ -51,14 +51,19 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
     setExtensions((prev) => prev.filter((id) => allowedIds.has(id)));
   }, [allowedIds]);
 
-  // Lazy: only computed when roles change. Empty when no roles selected.
-  const activeGroups = useMemo(() => getActiveGroups(roles), [roles]);
-  const grouped = useMemo(() => {
-    const map = {} as Record<ExtensionGroup, ExtensionDef[]>;
-    activeGroups.forEach((g) => (map[g] = []));
-    allowed.forEach((e) => map[e.group]?.push(e));
-    return map;
-  }, [allowed, activeGroups]);
+  // Per-role grouping: each selected role gets its own block, with its own type sections.
+  // Lazy: only computed when roles change.
+  const perRoleGroups = useMemo(() => {
+    return roles.map((role) => {
+      const roleExts = EXTENSIONS.filter((e) => e.roles.includes(role));
+      const byGroup = {} as Record<ExtensionGroup, ExtensionDef[]>;
+      EXTENSION_GROUP_ORDER.forEach((g) => {
+        const items = roleExts.filter((e) => e.group === g);
+        if (items.length > 0) byGroup[g] = items;
+      });
+      return { role, byGroup };
+    });
+  }, [roles]);
 
   const toggleRole = (role: RoleName) =>
     setRoles((prev) => (prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]));
