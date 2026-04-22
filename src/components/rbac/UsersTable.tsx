@@ -5,7 +5,6 @@ import {
   MoreVertical,
   ChevronDown,
   ChevronRight,
-  CheckCircle2,
   UserCog,
   UserX,
   Trash2,
@@ -21,6 +20,7 @@ import { MOCK_USERS } from "./mock-data";
 import {
   RoleName,
   User,
+  UserStatus,
   EXTENSIONS,
   ExtensionGroup,
   EXTENSION_GROUP_ORDER,
@@ -163,9 +163,7 @@ export function UsersTable() {
               <tr key={u.id} className="align-top transition-colors hover:bg-accent/30">
                 {/* Status */}
                 <td className="px-4 py-4">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(150_60%_92%)]">
-                    <CheckCircle2 className="h-5 w-5 text-[hsl(150_60%_35%)]" />
-                  </div>
+                  <StatusChip status={u.status} />
                 </td>
 
                 {/* User */}
@@ -312,5 +310,26 @@ function UserActionsMenu({ user, onEdit }: UserActionsMenuProps) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+const STATUS_STYLES: Record<UserStatus, string> = {
+  Active:
+    "bg-[hsl(150_60%_92%)] text-[hsl(150_60%_28%)] ring-1 ring-inset ring-[hsl(150_60%_35%)]/20",
+  Disabled:
+    "bg-[hsl(0_0%_94%)] text-[hsl(0_0%_35%)] ring-1 ring-inset ring-[hsl(0_0%_50%)]/20",
+  New: "bg-[hsl(210_90%_94%)] text-[hsl(210_80%_35%)] ring-1 ring-inset ring-[hsl(210_80%_45%)]/20",
+};
+
+function StatusChip({ status }: { status: UserStatus }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        STATUS_STYLES[status],
+      )}
+    >
+      {status}
+    </span>
   );
 }
