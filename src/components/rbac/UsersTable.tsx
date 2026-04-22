@@ -5,7 +5,6 @@ import {
   MoreVertical,
   ChevronDown,
   ChevronRight,
-  Menu as MenuIcon,
   CheckCircle2,
   UserCog,
   UserX,
