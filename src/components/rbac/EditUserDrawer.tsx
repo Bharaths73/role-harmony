@@ -35,7 +35,6 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
   const [hoveredGroup, setHoveredGroup] = useState<{ role: RoleName; group: ExtensionGroup } | null>(
     null,
   );
-  const { toast } = useToast();
 
   useEffect(() => {
     if (user && open) {
