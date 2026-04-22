@@ -145,7 +145,7 @@ export function UsersTable() {
       {/* Table */}
       <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
         <table className="w-full text-sm">
-          <thead className="bg-primary text-primary-foreground">
+          <thead className="text-slate-700" style={{ background: 'linear-gradient(180deg, #f8fafc, #eef2f7)' }}>
             <tr>
               <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">
                 Status
