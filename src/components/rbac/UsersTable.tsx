@@ -210,19 +210,16 @@ export function UsersTable() {
                               )}
                             </button>
 
-                            {/* Extension chips */}
+                            {/* Extension chips - horizontal layout */}
                             {expanded && groups.length > 0 && (
-                              <div className="mt-2 flex flex-col gap-1.5 pl-1">
-                                {groups.map(({ group, items }) =>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {groups.flatMap(({ group, items }) =>
                                   items.map((ext) => (
                                     <div
                                       key={ext.id}
-                                      className="inline-flex w-fit items-center gap-2 rounded-full border border-extension-border bg-extension-soft px-3 py-1 text-xs font-medium text-extension-soft-foreground"
+                                      className="inline-flex items-center gap-1.5 rounded-full border border-extension-border bg-extension-soft px-2.5 py-1 text-xs font-medium text-extension-soft-foreground"
                                     >
-                                      <span>
-                                        {GROUP_PREFIX[group]} {ext.label}
-                                      </span>
-                                      <MenuIcon className="h-3 w-3 opacity-70" />
+                                      {GROUP_PREFIX[group]} {ext.label}
                                     </div>
                                   )),
                                 )}
