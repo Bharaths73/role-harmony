@@ -74,10 +74,6 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
   const handleSave = () => {
     if (!user) return;
     onSave(user.id, roles, extensions);
-    toast({
-      title: "Access updated",
-      description: `${user.name} · ${roles.length} role${roles.length === 1 ? "" : "s"}, ${extensions.length} extension${extensions.length === 1 ? "" : "s"}.`,
-    });
     onOpenChange(false);
   };
 
