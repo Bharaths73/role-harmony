@@ -5,7 +5,6 @@ import {
   MoreVertical,
   ChevronDown,
   ChevronRight,
-  Menu as MenuIcon,
   CheckCircle2,
   UserCog,
   UserX,
@@ -145,7 +144,7 @@ export function UsersTable() {
       {/* Table */}
       <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
         <table className="w-full text-sm">
-          <thead className="bg-primary text-primary-foreground">
+          <thead className="text-slate-700" style={{ background: 'linear-gradient(180deg, #f8fafc, #eef2f7)' }}>
             <tr>
               <th className="w-24 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">
                 Status
@@ -171,18 +170,13 @@ export function UsersTable() {
 
                 {/* User */}
                 <td className="px-4 py-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-                      {u.initials}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">
-                        {u.name}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {u.email}
-                      </p>
-                    </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {u.name}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {u.email}
+                    </p>
                   </div>
                 </td>
 
@@ -216,19 +210,16 @@ export function UsersTable() {
                               )}
                             </button>
 
-                            {/* Extension chips */}
+                            {/* Extension chips - horizontal layout */}
                             {expanded && groups.length > 0 && (
-                              <div className="mt-2 flex flex-col gap-1.5 pl-1">
-                                {groups.map(({ group, items }) =>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {groups.flatMap(({ group, items }) =>
                                   items.map((ext) => (
                                     <div
                                       key={ext.id}
-                                      className="inline-flex w-fit items-center gap-2 rounded-full border border-extension-border bg-extension-soft px-3 py-1 text-xs font-medium text-extension-soft-foreground"
+                                      className="inline-flex items-center gap-1.5 rounded-full border border-extension-border bg-extension-soft px-2.5 py-1 text-xs font-medium text-extension-soft-foreground"
                                     >
-                                      <span>
-                                        {GROUP_PREFIX[group]} {ext.label}
-                                      </span>
-                                      <MenuIcon className="h-3 w-3 opacity-70" />
+                                      {GROUP_PREFIX[group]} {ext.label}
                                     </div>
                                   )),
                                 )}
