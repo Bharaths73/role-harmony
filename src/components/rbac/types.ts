@@ -16,12 +16,15 @@ export interface ExtensionDef {
   roles: RoleName[]; // which roles allow this extension
 }
 
+export type UserStatus = "Active" | "Disabled" | "New";
+
 export interface User {
   id: string;
   name: string;
   email: string;
   initials: string;
   lastActive: string;
+  status: UserStatus;
   roles: RoleName[];
   extensions: string[]; // extension ids
 }

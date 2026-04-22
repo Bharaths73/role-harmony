@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Mail, Info, Plus, X, Check, ChevronRight } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import {
   EXTENSIONS,
   EXTENSION_GROUP_ORDER,
@@ -36,7 +35,6 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
   const [hoveredGroup, setHoveredGroup] = useState<{ role: RoleName; group: ExtensionGroup } | null>(
     null,
   );
-  const { toast } = useToast();
 
   useEffect(() => {
     if (user && open) {
@@ -76,10 +74,6 @@ export function EditUserDrawer({ user, open, onOpenChange, onSave }: EditUserDra
   const handleSave = () => {
     if (!user) return;
     onSave(user.id, roles, extensions);
-    toast({
-      title: "Access updated",
-      description: `${user.name} · ${roles.length} role${roles.length === 1 ? "" : "s"}, ${extensions.length} extension${extensions.length === 1 ? "" : "s"}.`,
-    });
     onOpenChange(false);
   };
 
