@@ -163,9 +163,7 @@ export function UsersTable() {
               <tr key={u.id} className="align-top transition-colors hover:bg-accent/30">
                 {/* Status */}
                 <td className="px-4 py-4">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[hsl(150_60%_92%)]">
-                    <CheckCircle2 className="h-5 w-5 text-[hsl(150_60%_35%)]" />
-                  </div>
+                  <StatusChip status={u.status} />
                 </td>
 
                 {/* User */}
