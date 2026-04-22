@@ -12,6 +12,11 @@ import {
   Trash2,
   UserPlus,
   KeyRound,
+  Eraser,
+  Download,
+  Upload,
+  Contact,
+  Info,
 } from "lucide-react";
 import { MOCK_USERS } from "./mock-data";
 import {
@@ -87,20 +92,54 @@ export function UsersTable() {
 
   return (
     <div className="space-y-4">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between gap-4">
+      {/* Action toolbar (dark) */}
+      <div className="flex items-center gap-1 rounded-md bg-[hsl(215_50%_28%)] px-3 py-2 text-white shadow-sm">
+        {[
+          { icon: Search, label: "Search" },
+          { icon: Eraser, label: "Clear" },
+          { icon: UserPlus, label: "Add user" },
+          { icon: Download, label: "Download" },
+          { icon: Upload, label: "Upload" },
+          { icon: Contact, label: "Contacts" },
+          { icon: Info, label: "Info" },
+        ].map(({ icon: Icon, label }) => (
+          <button
+            key={label}
+            type="button"
+            aria-label={label}
+            className="flex h-9 w-9 items-center justify-center rounded-md text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <Icon className="h-4 w-4" />
+          </button>
+        ))}
+      </div>
+
+      {/* Filters row */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <select className="h-11 w-full appearance-none rounded-md border border-border bg-surface pl-9 pr-3 text-sm text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15">
+            <option value="">Select status</option>
+            <option value="active">Active</option>
+            <option value="disabled">Disabled</option>
+          </select>
+        </div>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search users, emails, roles…"
-            className="h-9 w-80 rounded-md border border-border bg-surface pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15"
+            placeholder="Search User"
+            className="h-11 w-full rounded-md border border-border bg-surface pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15"
           />
         </div>
-        <span className="text-xs text-muted-foreground">
-          {filtered.length} of {users.length} users
-        </span>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            placeholder="Search Role"
+            className="h-11 w-full rounded-md border border-border bg-surface pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/15"
+          />
+        </div>
       </div>
 
       {/* Table */}
@@ -144,7 +183,6 @@ export function UsersTable() {
                         {u.email}
                       </p>
                     </div>
-                    <MenuIcon className="ml-1 h-4 w-4 shrink-0 text-muted-foreground" />
                   </div>
                 </td>
 
@@ -170,7 +208,6 @@ export function UsersTable() {
                                 <span className="text-sm font-semibold text-foreground">
                                   {role}
                                 </span>
-                                <MenuIcon className="h-3.5 w-3.5 text-muted-foreground" />
                               </div>
                               {expanded ? (
                                 <ChevronDown className="h-4 w-4 text-muted-foreground" />
