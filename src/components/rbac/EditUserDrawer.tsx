@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Mail, Info, Plus, X, Check, ChevronRight } from "lucide-react";
-import { Mail, Info, Plus, X, Check, ChevronRight } from "lucide-react";
 import {
   EXTENSIONS,
   EXTENSION_GROUP_ORDER,
