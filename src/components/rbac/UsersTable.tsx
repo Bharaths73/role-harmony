@@ -171,18 +171,13 @@ export function UsersTable() {
 
                 {/* User */}
                 <td className="px-4 py-4">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-                      {u.initials}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">
-                        {u.name}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {u.email}
-                      </p>
-                    </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {u.name}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {u.email}
+                    </p>
                   </div>
                 </td>
 
